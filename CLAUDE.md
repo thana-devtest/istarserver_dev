@@ -60,11 +60,19 @@ Uploads go to **DigitalOcean Spaces** (S3-compatible, `@aws-sdk/client-s3`, buck
 - Daily auto-restart at **01:30** (`scheduleRestartAtSpecificTime`) to mitigate memory leaks.
 - Log file upload to Spaces **every 55 minutes**; old logs auto-pruned.
 
-## Deployment
+## Deployment (dev)
 
-Two targets, no CI tests:
-- **Vercel** — `vercel.json` routes all requests to `server.js`.
-- **DigitalOcean App Platform** — `.github/workflows/do-test-window.yml` un-archives the dev app + deploys on push to `main`/`master`, keeps it live ~1h, then re-archives to stop billing. A new push resets the timer.
+This repo is the **dev/test** fork.
+
+- **DigitalOcean App Platform** — dev app `king-prawn-app`
+  (shared app: web service `istarserver-dev` + static site `istarapp-dev`,
+  APP_ID `0346a1c0-7732-4e34-ac50-e6b365ad95b7`) auto-deploys from branch `main`.
+- **`.github/workflows/do-test-window.yml`** — on push to `main`/`master`:
+  un-archive + deploy the dev app, keep it live ~1h, then auto-archive to stop
+  billing. A new push resets the timer. This is a temporary "wake to test"
+  mechanism, NOT an always-on server.
+- Requires repo secret **`DIGITALOCEAN_ACCESS_TOKEN`** (scope: app read + update).
+  GitHub Actions must be enabled on the fork.
 
 ## Further reference
 
